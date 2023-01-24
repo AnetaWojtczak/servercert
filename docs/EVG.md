@@ -1,18 +1,16 @@
 ---
 title: Guidelines for the Issuance and Management of Extended Validation Certificates
-subtitle: Version 1.7.6
+subtitle: Version 1.8.0
 author:
   - CA/Browser Forum
-date: 2 June, 2021
+date: 30 November, 2022
 copyright: |
-  Copyright 2021 CA/Browser Forum
+  Copyright 2022 CA/Browser Forum
 
   This work is licensed under the Creative Commons Attribution 4.0 International license.
 ---
 
 # Introduction
-
-This version 1.7.4 represents the Extended Validation Guidelines, as adopted by the CA/Browser Forum as of Ballot SC35, passed by the Server Certificate Working Group on 9 September 2020, and effective as of 19 October 2020.
 
 The Guidelines describe an integrated set of technologies, protocols, identity proofing, lifecycle management, and auditing practices specifying the minimum requirements that must be met in order to issue and maintain Extended Validation Certificates ("EV Certificates") concerning an organization.  Subject Organization information from valid EV Certificates can then be used in a special manner by certain relying-party software applications (e.g., browser software) in order to provide users with a trustworthy confirmation of the identity of the entity that controls the Web site or other services they are accessing.  Although initially intended for use in establishing Web-based data communication conduits via TLS/SSL protocols, extensions are envisioned for S/MIME, time-stamping, VoIP, IM, Web services, etc.
 
@@ -68,6 +66,10 @@ The CA/Browser Forum is a voluntary open organization of certification authoriti
 | 1.7.4 | SC35 | Cleanups and Clarifications | 9-Sep-2020 | 19-Oct-2020 |
 | 1.7.5 | SC41 | Reformatting the BRs, EVGs, and NCSSRs | 24-Feb-2021 | 5-Apr-2021 |
 | 1.7.6 | SC42 | 398-day Re-use Period | 22-Apr-2021 | 2-Jun-2021 |
+| 1.7.7 | SC47 | Sunset subject:organizationalUnitName | 30-Jun-2021 | 16-Aug-2021 |
+| 1.7.8 | SC48 | Domain Name and IP Address Encoding | 22-Jul-2021 | 25-Aug-2021 |
+| 1.7.9 | SC54 | Onion Cleanup | 24-Mar-2022 | 23-Apr-2022 |
+| 1.8.0 | SC56 | 2022 Cleanup | 25-Oct-2022 | 30-Nov-2022 |
 
 \* Effective Date and Additionally Relevant Compliance Date(s)
 
@@ -76,8 +78,9 @@ The CA/Browser Forum is a voluntary open organization of certification authoriti
 | **Compliance** | **Section(s)** | **Summary Description (See Full Text for Details)** |
 |--|--|----------|
 | 2020-01-31 | [9.2.8](#928-subject-organization-identifier-field) | If subject:organizationIdentifier is present, the CA/Browser Forum Organization Identifier Extension MUST be present |
-| 2020-09-01 | [9.4](#94-maximum-validity-period-for-ev-certificate) & [Appendix F](#appendix-f--issuance-of-certificates-for-onion-domain-names) | Certificates issued MUST NOT have a Validity Period greater than 398 days. |
+| 2020-09-01 | [9.4](#94-maximum-validity-period-for-ev-certificate) & Appendix F | Certificates issued MUST NOT have a Validity Period greater than 398 days. |
 | 2020-10-01 | [11.1.3](#1113-disclosure-of-verification-sources) | Prior to using an Incorporating Agency or Registration Agency, the CA MUST ensure the agency has been publicly disclosed |
+| 2022-09-01 | [9.2.7](#927-subject-organizational-unit-name-field) | CAs MUST NOT include the organizationalUnitName field in the Subject |
 
 **Implementers' Note**: Version 1.3 of these EV Guidelines was published on 20 November 2010 and supplemented through May 2012 when version 1.4 was published.  ETSI TS 102 042 and ETSI TR 101 564 Technical Report: Guidance on ETSI TS 102 042 for Issuing Extended Validation Certificates for Auditors and CSPs reference version 1.3 of these EV Guidelines, and ETSI Draft EN 319 411-1 references version 1.4.  Version 1.4.5 of Webtrust(r) for Certification Authorities – Extended Validation Audit Criteria references version 1.4.5 of these EV Guidelines.  As illustrated in the Document History table above, the CA/Browser Forum continues to improve relevant industry guidelines, including this document, the Baseline Requirements, and the Network and Certificate System Security Requirements.  We encourage all CAs to conform to each revision on the date specified without awaiting a corresponding update to an applicable audit criterion.  In the event of a conflict between an existing audit criterion and a guideline revision, we will communicate with the audit community and attempt to resolve any uncertainty. We will respond to implementation questions directed to questions@cabforum.org.  Our coordination with compliance auditors will continue as we develop guideline revision cycles that harmonize with the revision cycles for audit criteria, the compliance auditing periods and cycles of CAs, and the CA/Browser Forum's guideline implementation dates.
 
@@ -148,10 +151,6 @@ Capitalized Terms are defined in the Baseline Requirements except where provided
 **Contract Signer**: A natural person who is either the Applicant, employed by the Applicant, or an authorized agent who has express authority to represent the Applicant, and who has authority on behalf of the Applicant to sign Subscriber Agreements.
 
 **Demand Deposit Account**: A deposit account held at a bank or other financial institution, the funds deposited in which are payable on demand.  The primary purpose of demand accounts is to facilitate cashless payments by means of check, bank draft, direct debit, electronic funds transfer, etc.  Usage varies among countries, but a demand deposit account is commonly known as a share draft account, a current account, or a checking account.
-
-**Enterprise EV Certificate**: An EV Certificate that an Enterprise RA authorizes the CA to issue at third and higher domain levels.
-
-**Enterprise EV RA**: An RA that is authorized by the CA to authorize the CA to issue EV Certificates at third and higher domain levels.
 
 **EV Authority**: A source other than the Certificate Approver, through which verification occurs that the Certificate Approver is expressly authorized by the Applicant, as of the date of the EV Certificate Request, to take the Request actions described in these Guidelines.
 
@@ -462,7 +461,7 @@ If the combination of names or the organization name by itself exceeds 64 charac
 
 __Certificate Field__: `subject:commonName` (OID: 2.5.4.3)  
 __Required/Optional__: Deprecated (Discouraged, but not prohibited)  
-__Contents__: If present, this field MUST contain a single Domain Name(s) owned or controlled by the Subject and to be associated with the Subject's server.  Such server MAY be owned and operated by the Subject or another entity (e.g., a hosting service).  Wildcard certificates are not allowed for EV Certificates except as permitted under [Appendix F](#appendix-f--issuance-of-certificates-for-onion-domain-names).
+__Contents__: If present, this field MUST contain a single Domain Name(s) owned or controlled by the Subject and to be associated with the Subject's server.  Such server MAY be owned and operated by the Subject or another entity (e.g., a hosting service). This field MUST NOT contain a Wildcard Domain Name unless the FQDN portion of the Wildcard Domain Name is an Onion Domain Name verified in accordance with Appendix B of the Baseline Requirements.
 
 ### 9.2.3. Subject Business Category Field
 
@@ -514,8 +513,7 @@ __Contents__: This field MUST contain the address of the physical location of th
 ### 9.2.7. Subject Organizational Unit Name Field
 
 __Certificate Field__: `subject:organizationalUnitName` (OID: 2.5.4.11)  
-__Required/Optional__: Optional  
-__Contents__: The CA SHALL implement a process that prevents an OU attribute from including a name, DBA, tradename, trademark, address, location, or other text that refers to a specific natural person or Legal Entity unless the CA has verified this information in accordance with [Section 11](#11-verification-requirements). This field MUST NOT contain only metadata such as '.', '-', and ' ' (i.e. space) characters, and/or any other indication that the value is absent, incomplete, or not applicable.
+__Required/Optional/Prohibited:__ __Prohibited__. 
 
 ### 9.2.8. Subject Organization Identifier Field
 
@@ -589,8 +587,7 @@ A Certificate issued to a Subscriber MUST contain one or more policy identifier(
 
 ## 9.4. Maximum Validity Period For EV Certificate
 
-The Validity Period for an EV Certificate SHALL NOT exceed 825 days.
-Effective 2020-09-01, the Validity Period for an EV Certificate SHALL NOT exceed 398 days.
+The Validity Period for an EV Certificate SHALL NOT exceed 398 days.
 
 It is RECOMMENDED that EV Subscriber Certificates have a Maximum Validity Period of twelve months.
 
@@ -646,7 +643,7 @@ If a CA includes an extension in a certificate that has a Certificate field whic
 
 __Certificate Field__: `subjectAltName:dNSName`  
 __Required/Optional__: __Required__  
-__Contents__: This extension MUST contain one or more host Domain Name(s) owned or controlled by the Subject and to be associated with the Subject's server.  Such server MAY be owned and operated by the Subject or another entity (e.g., a hosting service).  Wildcard certificates are not allowed for EV Certificates.
+__Contents__: This extension MUST contain one or more host Domain Name(s) owned or controlled by the Subject and to be associated with the Subject's server.  Such server MAY be owned and operated by the Subject or another entity (e.g., a hosting service). This extension MUST NOT contain a Wildcard Domain Name unless the FQDN portion of the Wildcard Domain Name is an Onion Domain Name verified in accordance with Appendix B of the Baseline Requirements.
 
 ### 9.8.2. CA/Browser Forum Organization Identifier Extension
 
@@ -675,7 +672,7 @@ CABFOrganizationIdentifier ::= SEQUENCE {
     registrationSchemeIdentifier PrintableString (SIZE(3)),
     registrationCountry          PrintableString (SIZE(2)),
     registrationStateOrProvince  [0] IMPLICIT PrintableString
-                                  OPTIONAL (SIZE(0..128)),
+                                  (SIZE(0..128)) OPTIONAL,
     registrationReference        UTF8String
 }
 ```
@@ -956,7 +953,7 @@ To verify the Applicant's ability to engage in business, the CA MUST verify the 
 
 ### 11.7.1. Verification Requirements
 
-1. For each Fully-Qualified Domain Name listed in a Certificate, other than a Domain Name with .onion in the right-most label of the Domain Name, the CA SHALL confirm that, as of the date the Certificate was issued, the Applicant (or the Applicant's Parent Company, Subsidiary Company, or Affiliate, collectively referred to as "Applicant" for the purposes of this section)  either is the Domain Name Registrant or has control over the FQDN using a procedure specified in Section 3.2.2.4 of the Baseline Requirements.  For a Certificate issued to a Domain Name with .onion in the right-most label of the Domain Name, the CA SHALL confirm that, as of the date the Certificate was issued, the Applicant's control over the .onion Domain Name in accordance with [Appendix F](#appendix-f--issuance-of-certificates-for-onion-domain-names).
+1. For each Fully-Qualified Domain Name listed in a Certificate which is not an Onion Domain Name, the CA SHALL confirm that, as of the date the Certificate was issued, the Applicant (or the Applicant's Parent Company, Subsidiary Company, or Affiliate, collectively referred to as "Applicant" for the purposes of this section) either is the Domain Name Registrant or has control over the FQDN using a procedure specified in Section 3.2.2.4 of the Baseline Requirements. For a Certificate issued to an Onion Domain Name, the CA SHALL confirm that, as of the date the Certificate was issued, the Applicant's control over the Onion Domain Name in accordance with Appendix B of the Baseline Requirements.
 
 2. **Mixed Character Set Domain Names**: EV Certificates MAY include Domain Names containing mixed character sets only in compliance with the rules set forth by the domain registrar.  The CA MUST visually compare any Domain Names with mixed character sets with known high risk domains.  If a similarity is found, then the EV Certificate Request MUST be flagged as High Risk.  The CA must perform reasonably appropriate additional authentication and verification to be certain beyond reasonable doubt that the Applicant and the target in question are the same organization.
 
@@ -1210,9 +1207,9 @@ The High Risk Certificate requirements of Section 4.2.1 of the Baseline Requirem
 
    A.  If the CA has operations in the U.S., the CA MUST take reasonable steps to verify with the following US Government denied lists and regulations:
 
-       i. BIS Denied Persons List - https://www.bis.doc.gov/index.php/the-denied-persons-list
-       ii. BIS Denied Entities List - https://www.bis.doc.gov/index.php/policy-guidance/lists-of-parties-of-concern/entity-list
-       iii. US Treasury Department List of Specially Designated Nationals and Blocked Persons - https://www.treasury.gov/resource-center/sanctions/sdn-list/pages/default.aspx
+       i. BIS Denied Persons List - [https://www.bis.doc.gov/index.php/the-denied-persons-list](https://www.bis.doc.gov/index.php/the-denied-persons-list)
+       ii. BIS Denied Entities List - [https://www.bis.doc.gov/index.php/policy-guidance/lists-of-parties-of-concern/entity-list](https://www.bis.doc.gov/index.php/policy-guidance/lists-of-parties-of-concern/entity-list)
+       iii. US Treasury Department List of Specially Designated Nationals and Blocked Persons - [https://www.treasury.gov/resource-center/sanctions/sdn-list/pages/default.aspx](https://www.treasury.gov/resource-center/sanctions/sdn-list/pages/default.aspx)
        iv. US Government export regulations
 
    B.  If the CA has operations in any other country, the CA MUST take reasonable steps to verify with all equivalent denied lists and export regulations (if any) in such other country.
@@ -1232,8 +1229,6 @@ A CA verifying an Applicant using information of the Applicant's Parent, Subsidi
 
 ## 11.13. Final Cross-Correlation and Due Diligence
 
-Except for Enterprise EV Certificates:
-
 1. The results of the verification processes and procedures outlined in these Guidelines are intended to be viewed both individually and as a group.  Thus, after all of the verification processes and procedures are completed, the CA MUST have a person who is not responsible for the collection of information review all of the information and documentation assembled in support of the EV Certificate application and look for discrepancies or other details requiring further explanation.
 2. The CA MUST obtain and document further explanation or clarification from the Applicant, Certificate Approver, Certificate Requester, Qualified Independent Information Sources, and/or other sources of information, as necessary, to resolve those discrepancies or details that require further explanation.
 3. The CA MUST refrain from issuing an EV Certificate until the entire corpus of information and documentation assembled in support of the EV Certificate Request is such that issuance of the EV Certificate will not communicate factual information that the CA knows, or the exercise of due diligence should discover from the assembled information and documentation, to be inaccurate,.  If satisfactory explanation and/or additional documentation are not received within a reasonable time, the CA MUST decline the EV Certificate Request and SHOULD notify the Applicant accordingly.
@@ -1243,7 +1238,7 @@ Except for Enterprise EV Certificates:
    B.  When the CA has utilized the services of an RA, the CA MAY rely on the language skills of the RA to perform the Final Cross-Correlation and Due Diligence, provided that the RA complies with [Section 11.13](#1113-final-cross-correlation-and-due-diligence), Subsections (1), (2) and (3).  Notwithstanding the foregoing, prior to issuing the EV Certificate, the CA MUST review the work completed by the RA and determine that all requirements have been met; or
    C.  When the CA has utilized the services of an RA, the CA MAY rely on the RA to perform the Final Cross-Correlation and Due Diligence, provided that the RA complies with this section and is subjected to the Audit Requirements of [Section 17.5](#175-regular-self-audits) and [Section 17.6](#176-auditor-qualification).
 
-   In the case of Enterprise EV Certificates to be issued in compliance with the requirements of [Section 14.2](#142-delegation-of-functions-to-registration-authorities-and-subcontractors), the Enterprise RA MAY perform the requirements of this Final Cross-Correlation and Due Diligence section.
+In the case of EV Certificates to be issued in compliance with the requirements of [Section 14.2](#142-delegation-of-functions-to-registration-authorities-and-subcontractors), the Enterprise RA MAY perform the requirements of this Final Cross-Correlation and Due Diligence section.
 
 ## 11.14. Requirements for Re-use of Existing Documentation
 
@@ -1291,7 +1286,7 @@ Root CA Private Keys MUST NOT be used to sign EV Certificates.
 
 # 13. Certificate Revocation and Status Checking
 
-The requirements in Section 4.9 of the Baseline Requirements apply equally to EV Certificates.  However, CAs MUST  ensure that CRLs for an EV Certificate chain can be downloaded in no more than three (3) seconds over an analog telephone line under normal network conditions.
+The requirements in Section 4.9 of the Baseline Requirements apply equally to EV Certificates.
 
 # 14. Employee and third party issues
 
@@ -1339,13 +1334,13 @@ The CA SHALL verify that the Delegated Third Party's personnel involved in the i
 
 ### 14.2.2. Enterprise RAs
 
-The CA MAY contractually authorize the Subject of a specified Valid EV Certificate to perform the RA function and authorize the CA to issue additional EV Certificates at third and higher domain levels that are contained within the domain of the original EV Certificate (also known as an Enterprise EV Certificate).  In such case, the Subject SHALL be considered an Enterprise RA, and the following requirements SHALL apply:
+The CA MAY contractually authorize a Subscriber to perform the RA function and authorize the CA to issue additional EV Certificates.  In such case, the Subscriber SHALL be considered an Enterprise RA, and the following requirements SHALL apply:
 
-1. An Enterprise RA SHALL NOT authorize the CA to issue an Enterprise EV Certificate at the third or higher domain levels to any Subject other than the Enterprise RA or a business that is owned or directly controlled by the Enterprise RA;
-2. In all cases, the Subject of an Enterprise EV Certificate MUST be an organization verified by the CA in accordance with these Guidelines;
-3. The CA MUST impose these limitations as a contractual requirement with the Enterprise RA and monitor compliance by the Enterprise RA;
-4. The Final Cross-Correlation and Due Diligence requirements of [Section 11.13](#1113-final-cross-correlation-and-due-diligence) MAY be performed by a single person representing the Enterprise RA; and
-5. The audit requirements of [Section 17.1](#171-eligible-audit-schemes) SHALL apply to the Enterprise RA, except in the case where the CA maintains control over the Root CA Private Key or Subordinate CA Private Key used to issue the Enterprise EV Certificates, in which case, the Enterprise RA MAY be exempted from the audit requirements.
+1. In all cases, the Subscriber MUST be an organization verified by the CA in accordance with these Guidelines;
+2. The CA MUST impose these limitations as a contractual requirement with the Enterprise RA and monitor compliance by the Enterprise RA; and
+3. The Final Cross-Correlation and Due Diligence requirements of [Section 11.13](#1113-final-cross-correlation-and-due-diligence) MAY be performed by a single person representing the Enterprise RA.
+
+Enterprise RAs that authorize the issuance of EV Certificates solely for its own organization are exempted from the audit requirements of [Section 17.1](#171-eligible-audit-schemes). In all other cases, the requirements of [Section 17.1](#171-eligible-audit-schemes) SHALL apply.
 
 ### 14.2.3. Guidelines Compliance Obligation
 
@@ -1415,7 +1410,7 @@ All requirements in Section 6.1.1.1 of the Baseline Requirements apply equally t
 
 # 18. Liability and Indemnification
 
-CAs MAY limit their liability as described in Section 9.8 of the Baseline Requirements except that a CA MAY NOT limit its liability to Subscribers or Relying Parties for legally recognized and provable claims to a monetary amount less than two thousand US dollars per Subscriber or Relying Party per EV Certificate.
+CAs MAY limit their liability as described in Section 9.8 of the Baseline Requirements except that a CA MUST NOT limit its liability to Subscribers or Relying Parties for legally recognized and provable claims to a monetary amount less than two thousand US dollars per Subscriber or Relying Party per EV Certificate.
 
 A CA's indemnification obligations and a Root CA's obligations with respect to subordinate CAs are set forth in Section 9.9 of the Baseline Requirements.
 
@@ -1637,75 +1632,9 @@ A CA may rely on the Contract Signer's authority to enter into the Subscriber Ag
    ii. is expressly authorized by [Applicant name] to sign Subscriber Agreements and approve EV Certificate requests on Applicant's behalf, and
    iii. has confirmed Applicant's right to use the domain(s) to be included in EV Certificates.
 
-# Appendix F – Issuance of Certificates for .onion Domain Names
+# Appendix F – Unused
 
-A CA may issue an EV Certificate with .onion in the right-most label of the Domain Name provided that issuance complies with the requirements set forth in this Appendix or Appendix C of the Baseline Requirements.
-
-1. CAB Forum Tor Service Descriptor Hash extension (2.23.140.1.31)
-
-   The CA MUST include the CAB Forum Tor Service Descriptor Hash extension in the `TBSCertificate` to convey hashes of keys related to .onion addresses. The CA MUST include the Tor Service Descriptor Hash extension using the following format:
-
-   ```ASN.1
-   cabf-TorServiceDescriptor OBJECT IDENTIFIER ::= { 2.23.140.1.31 }
-
-   TorServiceDescriptorSyntax ::=
-       SEQUENCE (1..MAX) of TorServiceDescriptorHash
-
-   TorServiceDescriptorHash:: = SEQUENCE {
-       onionURI             UTF8String,
-       algorithm            AlgorithmIdentifier,
-       subjectPublicKeyHash BIT STRING
-   }
-   ```
-
-   Where the `AlgorithmIdentifier` is a hashing algorithm (defined in RFC 6234) performed over the DER-encoding of an ASN.1 `subjectPublicKey` of the .onion service and `subjectPublicKeyHash` is the hash output.
-
-2. The CA MUST verify the Applicant's control over the .onion Domain Name using one of the following:
-
-   a. The CA MAY verify the Applicant's control over the .onion service by posting a specific value at a well-known URL under RFC5785.
-
-   b. The CA MAY verify the Applicant's control over the .onion service by having the Applicant provide a Certificate Request signed using the .onion public key if the `Attributes` section of the `certificationRequestInfo` contains:
-
-      i. A `caSigningNonce` attribute that:
-
-         1. contains a single value with at least 64-bits of entropy,
-         2. is generated by the CA, and
-         3. delivered to the Applicant through a Verified Method of Communication and
-
-      ii. An `applicantSigningNonce` attribute that:
-
-          1. contains a single value with at least 64-bits of entropy and 
-          2. is generated by the Applicant.
-
-      The signing nonce attributes have the following format:
-
-      ```ASN.1
-      caSigningNonce ATTRIBUTE ::= {
-          WITH SYNTAX              OCTET STRING
-          EQUALITY MATCHING RULE   octetStringMatch
-          SINGLE VALUE             TRUE
-          ID                       { cabf-caSigningNonce }
-      }
-
-      cabf-caSigningNonce OBJECT IDENTIFIER ::= { cabf 41 }
-
-      applicantSigningNonce ATTRIBUTE ::= {
-          WITH SYNTAX              OCTET STRING
-          EQUALITY MATCHING RULE   octetStringMatch
-          SINGLE VALUE             TRUE
-          ID                       { cabf-applicantSigningNonce }
-      }
-
-      cabf-applicantSigningNonce OBJECT IDENTIFIER ::= { cabf 42 }
-      ```
-
-3. Each Certificate that includes a Domain Name where .onion is in the right-most label of the Domain Name MUST conform to the requirements of these Guidelines, including the content requirements in Section 7.1 of the Baseline Requirements, except that the CA MAY include a wildcard character in the Subject Alternative Name Extension and Subject Common Name Field as the left-most character in the .onion Domain Name provided inclusion of the wildcard character complies with Section 3.2.2.6 of the Baseline Requirements.
-
-4. CAs MUST NOT issue a Certificate that includes a Domain Name where .onion is in the right-most label of the Domain Name with a Validity Period longer than 15 months. Effective 2020-09-01, CAs MUST NOT issue a Certificate that includes a Domain Name where .onion is in the right-most label of the Domain Name with a Validity Period longer than 398 days.
-
-5. When a Certificate that includes a Domain Name where .onion is in the right-most label of the Domain Name, the Domain Name shall not be considered an Internal Name if the Certificate was issued in compliance with this [Appendix F](#appendix-f--issuance-of-certificates-for-onion-domain-names).
-
-6. On or before May 1, 2015, each CA MUST revoke all Certificates issued with the Subject Alternative Name extension or Common Name field that includes a Domain Name where .onion is in the right-most label of the Domain Name unless the Certificate was issued in compliance with this [Appendix F](#appendix-f--issuance-of-certificates-for-onion-domain-names).
+This appendix is intentionally left blank.
 
 # Appendix G – Abstract Syntax Notation One module for EV certificates
 
